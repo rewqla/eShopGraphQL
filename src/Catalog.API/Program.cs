@@ -1,3 +1,5 @@
+using eShop.Catalog.Types;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
@@ -7,8 +9,12 @@ builder.Services
 builder.Services
     .AddMigration<CatalogContext, CatalogContextSeed>();
 
+builder.Services.AddScoped<Query>();
+
 builder.Services
-    .AddGraphQLServer();
+    .AddGraphQLServer()
+    .AddQueryType<Query>()
+    .AddProjections();
 
 var app = builder.Build();
 
