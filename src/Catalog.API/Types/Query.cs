@@ -1,60 +1,56 @@
-﻿using eShop.Catalog.Models;
-using HotChocolate.Data.Filters;
+﻿using HotChocolate.Data.Filters;
+using HotChocolate.Data.Sorting;
 
-namespace eShop.Catalog.Types
+namespace eShop.Catalog.Types;
+
+public class Query
 {
-    public class Query
+    [UsePaging(DefaultPageSize = 1, MaxPageSize = 10)]
+    [UseProjection]
+    public IQueryable<Brand> GetBrands(CatalogContext context)
+        => context.Brands;
+
+    [UseFirstOrDefault]
+    [UseProjection]
+    public IQueryable<Brand> GetBrandById(int id, CatalogContext context)
+        => context.Brands.Where(t => t.Id == id);
+
+    [UsePaging]
+    [UseProjection]
+    [UseFiltering]
+    [UseSorting]
+    public IQueryable<Product> GetProducts(CatalogContext context, IFilterContext filterContext, ISortingContext sortingContext)
     {
-        [UsePaging(DefaultPageSize = 1, MaxPageSize = 20)]
-        [UseProjection]    //For nested classes
-        [UseFiltering]
-        public IQueryable<Brand> GetBrands(CatalogContext context)
-            => context.Brands;
+        filterContext.Handled(false);
+        sortingContext.Handled(false);
 
-        [UseFirstOrDefault]
-        [UseProjection] //For nested classes and need to be used via where
-        public IQueryable<Brand?> GetBrandById(int id, CatalogContext context)
-            => context.Brands.Where(b => b.Id == id);
+        IQueryable<Product> query = context.Products;
 
+        if (!filterContext.IsDefined)
+        {
+            query = query.Where(t => t.BrandId == 1);
+        }
 
-        //[UsePaging]
-        [UsePaging(DefaultPageSize = 1, MaxPageSize = 20)]
-        [UseProjection]    //For nested classes
-        [UseFiltering]
-        //[UseFiltering<ProductFilterInputType>]
-        public IQueryable<Product> GetProducts(CatalogContext context)
-            => context.Products;
+        if (!sortingContext.IsDefined)
+        {
+            query = query.OrderBy(t => t.Brand!.Name).ThenByDescending(t => t.Price);
+        }
 
-        [UseFirstOrDefault]
-        [UseProjection] //For nested classes and need to be used via where
-        public IQueryable<Product?> GetProductById(int id, CatalogContext context)
-            => context.Products.Where(p => p.Id == id);
-
-
-        [UsePaging(DefaultPageSize = 1, MaxPageSize = 20)]
-        [UseProjection]    //For nested classes
-        [UseFiltering]
-        public IQueryable<ProductType> GetProductTypes(CatalogContext context)
-            => context.ProductTypes;
-
-        [UseFirstOrDefault]
-        [UseProjection]      //For nested classes and need to be used via where
-        public IQueryable<ProductType?> GetProductTypeById(int id, CatalogContext context)
-            => context.ProductTypes.Where(b => b.Id == id);
+        return query;
     }
-}
 
-public class ProductFilterInputType : FilterInputType<Product>
-{
-    protected override void Configure(IFilterInputTypeDescriptor<Product> descriptor)
-    {
-        descriptor.BindFieldsExplicitly();
+    [UseFirstOrDefault]
+    [UseProjection]
+    public IQueryable<Product> GetProductById(int id, CatalogContext context)
+        => context.Products.Where(t => t.Id == id);
 
-        descriptor.Field(t => t.Name).Type< SearchStringOperationFilterInputType>();
-        descriptor.Field(t => t.Type);
-        descriptor.Field(t => t.Brand);
-        descriptor.Field(t => t.Price);
-        descriptor.Field(t => t.AvailableStock);
-        descriptor.Field(t => t.Description);
-    }
+    [UsePaging]
+    [UseProjection]
+    public IQueryable<ProductType> GetProductTypes(CatalogContext context)
+        => context.ProductTypes;
+
+    [UseFirstOrDefault]
+    [UseProjection]
+    public IQueryable<ProductType> GetProductTypeById(int id, CatalogContext context)
+        => context.ProductTypes.Where(t => t.Id == id);
 }

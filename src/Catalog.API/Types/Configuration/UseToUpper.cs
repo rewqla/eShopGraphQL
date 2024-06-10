@@ -1,7 +1,7 @@
 ﻿using HotChocolate.Types.Descriptors;
 using System.Reflection;
 
-namespace eShop.Catalog.Types
+namespace eShop.Catalog.Types.Configuration
 {
     public static class UseToUpperObjectFieldDescriptorExtensions
     {
@@ -17,11 +17,5 @@ namespace eShop.Catalog.Types
                 }
             });
         }
-    }
-
-    public class UseToUpperAttribute : ObjectFieldDescriptorAttribute
-    {
-        protected override void OnConfigure(IDescriptorContext context, IObjectFieldDescriptor descriptor, MemberInfo info)
-        => descriptor.UseToUpper();
     }
 }
