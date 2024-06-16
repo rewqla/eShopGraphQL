@@ -14,9 +14,7 @@ builder.Services
 
 builder.Services
     .AddGraphQLServer()
-    .AddQueryType<Query>()
-    .AddType<ProductFilterInputType>()
-    .AddType<ProductSortInputType>()
+    .AddCatalogTypes()
     .AddGraphQLConventions();
 
 var app = builder.Build();
