@@ -1,5 +1,8 @@
-﻿using HotChocolate.Data.Filters;
+﻿using eShop.Catalog.Services;
+using HotChocolate.Data.Filters;
 using HotChocolate.Data.Sorting;
+using HotChocolate.Pagination;
+using HotChocolate.Types.Pagination;
 
 namespace eShop.Catalog.Types;
 
@@ -7,31 +10,12 @@ namespace eShop.Catalog.Types;
 public static class ProductQueries
 {
     [UsePaging]
-    [UseProjection]
-    [UseFiltering]
-    [UseSorting]
-    public static IQueryable<Product> GetProducts(CatalogContext context, IFilterContext filterContext, ISortingContext sortingContext)
-    {
-        filterContext.Handled(false);
-        sortingContext.Handled(false);
+    public static async Task<Connection<Product>> GetProductsAsync
+        (PagingArguments pagingArguments, ProductService productService, CancellationToken cancellationToken)
+        => await productService.GetProductsAsync(pagingArguments, cancellationToken).ToConnectionAsync();
 
-        IQueryable<Product> query = context.Products;
 
-        if (!filterContext.IsDefined)
-        {
-            query = query.Where(t => t.BrandId == 1);
-        }
-
-        if (!sortingContext.IsDefined)
-        {
-            query = query.OrderBy(t => t.Brand!.Name).ThenByDescending(t => t.Price);
-        }
-
-        return query;
-    }
-
-    [UseFirstOrDefault]
-    [UseProjection]
-    public static IQueryable<Product> GetProductById(int id, CatalogContext context)
-        => context.Products.Where(t => t.Id == id);
+    public static async Task<Product?> GetProductByIdAsync
+        (int id, ProductService productService, CancellationToken cancellationToken)
+        => await productService.GetProductByIdAsync(id, cancellationToken);
 }

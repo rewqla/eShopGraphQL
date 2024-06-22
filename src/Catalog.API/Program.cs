@@ -1,7 +1,5 @@
 using eShop.Catalog.Extensions;
-using eShop.Catalog.Types;
-using eShop.Catalog.Types.Filtering;
-using eShop.Catalog.Types.Sorting;
+using eShop.Catalog.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +9,11 @@ builder.Services
 
 builder.Services
     .AddMigration<CatalogContext, CatalogContextSeed>();
+
+builder.Services
+    .AddScoped<ProductService>()
+    .AddScoped<BrandService>()
+    .AddScoped<ProductTypeService>();
 
 builder.Services
     .AddGraphQLServer()
