@@ -1,5 +1,6 @@
-﻿using HotChocolate.Data.Filters;
-using HotChocolate.Data.Sorting;
+﻿using eShop.Catalog.Services;
+using HotChocolate.Pagination;
+using HotChocolate.Types.Pagination;
 
 namespace eShop.Catalog.Types;
 
@@ -7,12 +8,41 @@ namespace eShop.Catalog.Types;
 public static class ProductTypeQueries
 {
     [UsePaging]
-    [UseProjection]
-    public static IQueryable<ProductType> GetProductTypes(CatalogContext context)
-        => context.ProductTypes;
+    public static async Task<Connection<ProductType>> GetProductTypesAsync(
+        PagingArguments pagingArguments,
+        ProductTypeService productTypeService,
+        CancellationToken cancellationToken)
+        => await productTypeService.GetProductTypesAsync(pagingArguments, cancellationToken).ToConnectionAsync();
 
-    [UseFirstOrDefault]
-    [UseProjection]
-    public static IQueryable<ProductType> GetProductTypeById(int id, CatalogContext context)
-        => context.ProductTypes.Where(t => t.Id == id);
+    [NodeResolver]
+    public static async Task<ProductType?> GetProductTypeByIdAsync(
+        int id,
+        ProductTypeService productTypeService,
+        CancellationToken cancellationToken)
+        => await productTypeService.GetProductTypeByIdAsync(id, cancellationToken);
+
+    public static async Task<ProductType?> GetProductTypeByNameAsync(
+        string name,
+        ProductTypeService productTypeService,
+        CancellationToken cancellationToken)
+        => await productTypeService.GetProductTypeByNameAsync(name, cancellationToken);
+}
+
+public class ProductConnection : Connection<Product>
+{
+    public ProductConnection(
+        IReadOnlyCollection<Edge<Product>> edges,
+        ConnectionPageInfo info,
+        Func<CancellationToken, ValueTask<int>> getTotalCount)
+        : base(edges, info, getTotalCount)
+    {
+    }
+
+    public ProductConnection(
+        IReadOnlyCollection<Edge<Product>> edges,
+        ConnectionPageInfo info,
+        int totalCount = 0)
+        : base(edges, info, totalCount)
+    {
+    }
 }

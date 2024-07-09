@@ -1,6 +1,4 @@
 ﻿using eShop.Catalog.Services;
-using HotChocolate.Data.Filters;
-using HotChocolate.Data.Sorting;
 using HotChocolate.Pagination;
 using HotChocolate.Types.Pagination;
 
@@ -16,6 +14,7 @@ public static class BrandQueries
         CancellationToken cancellationToken)
         => await brandService.GetBrandsAsync(pagingArguments, cancellationToken).ToConnectionAsync();
 
+    [NodeResolver]
     public static async Task<Brand?> GetBrandByIdAsync(
         int id,
         BrandService brandService,

@@ -8,13 +8,12 @@ namespace eShop.Catalog.Extensions
         public static IRequestExecutorBuilder AddGraphQLConventions(
             this IRequestExecutorBuilder builder)
         {
-            builder
-                .AddProjections()
-                .AddFiltering(
-                    c => c.AddDefaults()
-                        .BindRuntimeType<string, DefaultStringOperationFilterInputType>())
-                .AddSorting()
-                .AddPagingArguments();
+            builder.AddPagingArguments();
+            builder.AddFiltering();
+            builder.AddSorting();
+            builder.AddGlobalObjectIdentification();
+            builder.AddQueryConventions();
+
             return builder;
         }
     }

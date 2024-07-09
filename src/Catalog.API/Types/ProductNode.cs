@@ -1,4 +1,5 @@
 ﻿using eShop.Catalog.Services;
+using HotChocolate.Resolvers;
 
 namespace eShop.Catalog.Types;
 
@@ -14,6 +15,29 @@ public static partial class ProductNode
             .Ignore(t => t.RemoveStock(default));
     }
 
+    public static int InternalId([Parent] Product product) => product.Id;
+
+    public static string Errors(IResolverContext context)
+    {
+        throw new GraphQLException(
+            ErrorBuilder.New()
+                .SetMessage("Something is wrong 1!")
+                .SetPath(context.Path)
+                .AddLocation(
+                    context.Selection.SyntaxNode.Location!.Line,
+                    context.Selection.SyntaxNode.Location!.Column)
+                .Build(),
+            ErrorBuilder.New()
+                .SetMessage("Something is wrong 2!")
+                .SetPath(context.Path)
+                .AddLocation(
+                    context.Selection.SyntaxNode.Location!.Line,
+                    context.Selection.SyntaxNode.Location!.Column)
+                .Build());
+    }
+
+    public static string? NullableErrors() => throw new ThisIsNiceException();
+
     public static async Task<Brand?> GetBrandAsync(
         [Parent] Product product,
         BrandService brandService,
@@ -25,4 +49,11 @@ public static partial class ProductNode
         ProductTypeService productTypeService,
         CancellationToken cancellationToken)
         => await productTypeService.GetProductTypeByIdAsync(product.BrandId, cancellationToken);
+}
+
+public record NotFound(string Message, [ID<Product>] int Id);
+
+public class ThisIsNiceException : Exception
+{
+    public string SomethingUseful => "Something Broke";
 }
