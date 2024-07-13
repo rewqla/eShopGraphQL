@@ -66,3 +66,81 @@ mutation{
     }
   }
 }
+
+
+// Mutation with handling exception
+mutation {
+  createProduct(
+    input: {
+      name: "Some"
+      price: 2.1
+      brandId: 10000
+      typeId: 1
+      restockThreshold: 15
+      maxStockThreshold: 30
+    }
+  ) {
+    product {
+      id
+      name
+    }
+    errors {
+      kind: __typename
+      ... on ArgumentError {
+        message
+        paramName
+      }
+      ... on InvalidBrandIdError {
+        brandId: id
+        message
+      }
+      ... on InvalidProductTypeIdError {
+        productTypeId: id
+        message
+      }
+      ... on MaxStockThresholdToSmallError {
+        message
+        restockThreshold
+        maxStockThreshold
+      }
+    }
+  }
+}
+// Mutation with handling exception + creating product
+mutation {
+  createProduct(
+    input: {
+      name: "123"
+      price: 2.1
+      brandId: "QnJhbmQ6MTA="
+      typeId: "UHJvZHVjdFR5cGU6NA=="
+      restockThreshold: 15
+      maxStockThreshold: 30
+    }
+  ) {
+    product {
+      id
+      name
+    }
+    errors {
+      kind: __typename
+      ... on ArgumentError {
+        message
+        paramName
+      }
+      ... on InvalidBrandIdError {
+        brandId: id
+        message
+      }
+      ... on InvalidProductTypeIdError {
+        productTypeId: id
+        message
+      }
+      ... on MaxStockThresholdToSmallError {
+        message
+        restockThreshold
+        maxStockThreshold
+      }
+    }
+  }
+}

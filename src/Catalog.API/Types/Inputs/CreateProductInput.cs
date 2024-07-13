@@ -4,7 +4,7 @@ public record CreateProductInput(
     string Name,
     string? Description,
     decimal Price,
-    [ID<ProductType>] int TypeId,
-    [ID<Brand>] int BrandId,
+    [property: ID<ProductType>] int TypeId,
+    [property: ID<Brand>] int BrandId,
     int RestockThreshold,
     int MaxStockThreshold);

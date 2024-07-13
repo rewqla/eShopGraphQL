@@ -1,4 +1,5 @@
 ﻿using eShop.Catalog.Services;
+using eShop.Catalog.Types.Errors;
 using eShop.Catalog.Types.Inputs;
 
 namespace eShop.Catalog.Types
@@ -6,6 +7,10 @@ namespace eShop.Catalog.Types
     [MutationType]
     public static class ProductMutations
     {
+        [Error<InvalidBrandIdErrorFactory>]
+        [Error<InvalidProductTypeIdError>]
+        [Error<ArgumentException>]
+        [Error<MaxStockThresholdToSmallException>]
         public static async Task<Product> CreateProductAsync(
         CreateProductInput input,
         ProductService productService,

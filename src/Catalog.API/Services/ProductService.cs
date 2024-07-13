@@ -20,6 +20,7 @@ public sealed class ProductService(
         PagingArguments pagingArguments,
         CancellationToken cancellationToken = default)
     {
+
         var query = context.Products.AsNoTracking();
 
         if (productFilter?.BrandIds is { Count: > 0 } brandIds)
@@ -49,6 +50,23 @@ public sealed class ProductService(
 
     public async Task CreateProductAsync(Product product, CancellationToken cancellationToken)
     {
+        ArgumentException.ThrowIfNullOrEmpty(product.Name);
+
+        if (product.RestockThreshold >= product.MaxStockThreshold)
+        {
+            throw new MaxStockThresholdToSmallException(product.RestockThreshold, product.MaxStockThreshold);
+        }
+
+        if (!await context.Brands.AnyAsync(t => t.Id == product.BrandId, cancellationToken))
+        {
+            throw new EntityNotFoundException(nameof(Brand), product.BrandId);
+        }
+
+        if (!await context.ProductTypes.AnyAsync(t => t.Id == product.TypeId, cancellationToken))
+        {
+            throw new EntityNotFoundException(nameof(ProductType), product.TypeId);
+        }
+        product.Id = 1000;
         context.Products.Add(product);
         await context.SaveChangesAsync(cancellationToken);
     }
