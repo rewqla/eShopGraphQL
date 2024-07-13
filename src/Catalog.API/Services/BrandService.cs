@@ -25,4 +25,15 @@ public sealed class BrandService(
             .OrderBy(t => t.Name)
             .ThenBy(t => t.Id)
             .ToPageAsync(args, ct);
+
+    public async Task CreateBrandAsync(Brand brand, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrEmpty(brand.Name))
+        {
+            ArgumentException.ThrowIfNullOrEmpty(brand.Name);
+        }
+
+        context.Brands.Add(brand);
+        await context.SaveChangesAsync(cancellationToken);
+    }
 }

@@ -8,6 +8,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="queries.graphql" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="queries.graphql" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Using Include="eShop.Catalog" />
 		<Using Include="eShop.Catalog.Data" />
 		<Using Include="eShop.Catalog.Models" />

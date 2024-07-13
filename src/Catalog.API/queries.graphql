@@ -1,0 +1,58 @@
+
+//Get brands with some filds and node product
+
+query {
+  brands(first: 3) {
+    nodes {
+      name
+      products {
+        nodes {
+          availableStock
+          description
+          id
+          imageFileName
+          maxStockThreshold
+          name
+          onReorder
+          price
+          restockThreshold
+        }
+      }
+    }
+  }
+}
+
+//Get products with some filds and nested brand
+
+query {
+  products(first: 3) {
+    nodes {
+      id
+      name
+      brand {
+        id
+        name
+      }
+    }
+  }
+}
+
+//Execute functions and get result fields
+
+query {
+  brandByName(name: "Solstix") {
+    name
+    id
+  }
+  brandById(id: "QnJhbmQ6MTA=") {
+    name
+  }
+}
+
+// Add brand
+mutation{
+  createBrand(name:"123"){
+    id
+    name
+  }
+}
