@@ -46,6 +46,12 @@ public sealed class ProductService(
         PagingArguments args,
         CancellationToken ct = default)
         => await productsByTypeId.LoadAsync(new PageKey<int>(typeId, args), ct);
+
+    public async Task CreateProductAsync(Product product, CancellationToken cancellationToken)
+    {
+        context.Products.Add(product);
+        await context.SaveChangesAsync(cancellationToken);
+    }
 }
 
 

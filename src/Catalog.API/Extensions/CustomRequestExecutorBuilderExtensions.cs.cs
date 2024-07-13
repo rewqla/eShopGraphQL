@@ -13,6 +13,7 @@ namespace eShop.Catalog.Extensions
             builder.AddSorting();
             builder.AddGlobalObjectIdentification();
             builder.AddQueryConventions();
+            builder.AddMutationConventions();
 
             return builder;
         }

@@ -20,7 +20,6 @@ builder.Services
     .AddGraphQLServer()
     .AddCatalogTypes()
     .AddGraphQLConventions()
-
     .AddErrorInterfaceType<IMyErrorInterface>()
     .AddErrorFilter(error =>
     {
