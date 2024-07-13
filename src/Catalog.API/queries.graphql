@@ -56,3 +56,13 @@ mutation{
     name
   }
 }
+
+// Add brand using mutation design principal
+mutation{
+  createBrand(input:{name:"Test branch"}){
+    brand{
+      id
+      name
+    }
+  }
+}

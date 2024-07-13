@@ -5,13 +5,16 @@ namespace eShop.Catalog.Types;
 [MutationType]
 public static class BrandMutations
 {
-    public static async Task<Brand> CreateBrandAsync(
-        string name,
+    public static async Task<CreateBrandPayload> CreateBrandAsync(
+        CreateBrandInput input,
         BrandService brandService,
         CancellationToken cancellationToken)
     {
-        var brand = new Brand { Name = name };
+        var brand = new Brand { Name = input.Name };
         await brandService.CreateBrandAsync(brand, cancellationToken);
-        return brand;
+        return new CreateBrandPayload(brand);
     }
 }
+
+public record CreateBrandInput(string Name);
+public record CreateBrandPayload(Brand Brand);
