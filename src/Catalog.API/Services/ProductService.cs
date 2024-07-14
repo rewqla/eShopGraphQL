@@ -10,9 +10,7 @@ public sealed class ProductService(
 {
     public async Task<Product?> GetProductByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-        throw new CustomException();
-
-        // return await productById.LoadAsync(id, cancellationToken);
+        return await productById.LoadAsync(id, cancellationToken);
     }
 
     public async Task<Page<Product>> GetProductsAsync(
@@ -66,8 +64,36 @@ public sealed class ProductService(
         {
             throw new EntityNotFoundException(nameof(ProductType), product.TypeId);
         }
-        product.Id = 1000;
+        product.Id = 1001;
         context.Products.Add(product);
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpdateProductAsync(Product product, CancellationToken cancellationToken)
+    {
+        if (product.Id < 1)
+        {
+            throw new InvalidOperationException("Invalid product id.");
+        }
+
+        ArgumentException.ThrowIfNullOrEmpty(product.Name);
+
+        if (product.RestockThreshold >= product.MaxStockThreshold)
+        {
+            throw new MaxStockThresholdToSmallException(product.RestockThreshold, product.MaxStockThreshold);
+        }
+
+        if (!await context.Brands.AnyAsync(t => t.Id == product.BrandId, cancellationToken))
+        {
+            throw new EntityNotFoundException(nameof(Brand), product.BrandId);
+        }
+
+        if (!await context.ProductTypes.AnyAsync(t => t.Id == product.TypeId, cancellationToken))
+        {
+            throw new EntityNotFoundException(nameof(ProductType), product.TypeId);
+        }
+
+        context.Products.Entry(product).State = EntityState.Modified;
         await context.SaveChangesAsync(cancellationToken);
     }
 }

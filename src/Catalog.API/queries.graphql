@@ -144,3 +144,39 @@ mutation {
     }
   }
 }
+
+// patch update
+mutation updateProduct($input: UpdateProductInput!) {
+  updateProduct(input: $input) {
+    product {
+      name
+      id
+    }
+    errors {
+      kind: __typename
+      ... on ArgumentError {
+        message
+        paramName
+      }
+      ... on InvalidBrandIdError {
+        brandId: id
+        message
+      }
+      ... on InvalidProductTypeIdError {
+        productTypeId: id
+        message
+      }
+      ... on MaxStockThresholdToSmallError {
+        message
+        restockThreshold
+        maxStockThreshold
+      }
+    }
+  }
+}
+{
+  "input": {
+    "id": "UHJvZHVjdDoxMDAw",
+    "name": "Green Equipment2"
+  }
+}
