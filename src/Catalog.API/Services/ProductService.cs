@@ -1,4 +1,11 @@
-﻿using HotChocolate.Pagination;
+﻿using eShop.Catalog.Types.Filtering;
+using eShop.Catalog.Types.Sorting;
+using HotChocolate.Data;
+using HotChocolate.Data.Filters;
+using HotChocolate.Data.Sorting;
+using HotChocolate.Pagination;
+using Microsoft.EntityFrameworkCore;
+using System.Threading;
 
 namespace eShop.Catalog.Services;
 
@@ -13,25 +20,10 @@ public sealed class ProductService(
         return await productById.LoadAsync(id, cancellationToken);
     }
 
-    public async Task<Page<Product>> GetProductsAsync(
-        ProductFilter? productFilter,
-        PagingArguments pagingArguments,
+    public async Task<IList<Product>> GetProductsAsync(
         CancellationToken cancellationToken = default)
     {
-
-        var query = context.Products.AsNoTracking();
-
-        if (productFilter?.BrandIds is { Count: > 0 } brandIds)
-        {
-            query = query.Where(p => brandIds.Contains(p.BrandId));
-        }
-
-        if (productFilter?.TypeIds is { Count: > 0 } typeIds)
-        {
-            query = query.Where(p => typeIds.Contains(p.TypeId));
-        }
-
-        return await query.OrderBy(t => t.Name).ThenBy(t => t.Id).ToPageAsync(pagingArguments, cancellationToken);
+        return await context.Products.AsNoTracking().ToListAsync();
     }
 
     public async Task<Page<Product>> GetProductsByBrandAsync(

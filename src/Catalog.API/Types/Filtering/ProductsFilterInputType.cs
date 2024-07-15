@@ -4,9 +4,11 @@ namespace eShop.Catalog.Types.Filtering;
 
 public readonly record struct ProductsFilterInputType(
     ProductsBrandIdFilterInputType? BrandId,
-    ProductsTypeIdFilterInputType? TypeId)
+    ProductsTypeIdFilterInputType? TypeId,
+    string Name,
+    decimal Price)
 {
-    public ProductFilter ToFilter() => new(BrandId?.In, TypeId?.In);
+    public ProductFilter ToFilter() => new(Name, Price, BrandId?.In, TypeId?.In);
 }
 
 public readonly record struct ProductsBrandIdFilterInputType(int[]? In);

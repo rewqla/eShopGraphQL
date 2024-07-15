@@ -9,7 +9,10 @@ namespace eShop.Catalog.Extensions
             this IRequestExecutorBuilder builder)
         {
             builder.AddPagingArguments();
-            builder.AddFiltering();
+            builder.AddFiltering(
+                    c => c.AddDefaults()
+                        .BindRuntimeType<string, DefaultStringOperationFilterInputType>());
+            builder.AddType<ProductFilterInputType>();
             builder.AddSorting();
             builder.AddGlobalObjectIdentification();
             builder.AddQueryConventions();

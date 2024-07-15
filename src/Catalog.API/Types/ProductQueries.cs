@@ -1,7 +1,11 @@
 ﻿using System.Buffers;
 using eShop.Catalog.Services;
 using eShop.Catalog.Types.Filtering;
+using eShop.Catalog.Types.Sorting;
+using HotChocolate.Data.Filters;
+using HotChocolate.Data.Sorting;
 using HotChocolate.Pagination;
+using HotChocolate.Resolvers;
 using HotChocolate.Types.Pagination;
 
 namespace eShop.Catalog.Types;
@@ -9,13 +13,27 @@ namespace eShop.Catalog.Types;
 [QueryType]
 public static class ProductQueries
 {
-    [UsePaging]
-    public static async Task<Connection<Product>> GetProductsAsync(
-        ProductsFilterInputType? where,
-        PagingArguments pagingArguments,
-        ProductService productService,
-        CancellationToken cancellationToken)
-        => await productService.GetProductsAsync(where?.ToFilter(), pagingArguments, cancellationToken).ToConnectionAsync();
+    //[UsePaging]
+    //public static async Task<Connection<Product>> GetProductsAsync(
+    //    ProductsFilterInputType? where,
+    //    PagingArguments pagingArguments,
+    //    ProductService productService,
+    //    CancellationToken cancellationToken)
+    //    => await productService.GetProductsAsync(where?.ToFilter(), pagingArguments, cancellationToken).ToConnectionAsync();
+
+
+    [UseOffsetPaging(MaxPageSize = 10, IncludeTotalCount = true)]
+    //[UsePaging(MaxPageSize = 10)]
+    [UseFiltering(typeof(ProductFilterInputType))]
+    [UseSorting(typeof(ProductSortInputType))]
+    public static async Task<IList<Product>> GetProductsAsync(
+    ProductService productService,
+    CancellationToken cancellationToken)
+    {
+        return await productService.GetProductsAsync(cancellationToken);
+    }
+
+
 
     [Error<CustomError>]
     [NodeResolver]

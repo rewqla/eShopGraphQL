@@ -180,3 +180,82 @@ mutation updateProduct($input: UpdateProductInput!) {
     "name": "Green Equipment2"
   }
 }
+
+
+// where in
+query {
+  products(first: 2, where: { brandId: { in: 1 } }) {
+    nodes {
+      id
+      name
+      brand {
+        id
+        name
+      }
+      type {
+        id
+      }
+      price
+    }
+  }
+}
+
+//--------------
+query {
+  products(after: "QWVyb0xpdGUgQ3ljbGluZyBIZWxtZXQ6OTU=") {
+    nodes {
+      id
+      name
+      brand {
+        id
+        name
+      }
+      type {
+        id
+      }
+      price
+    }
+    edges {
+      cursor
+    }
+  }
+}
+
+///--------------------------- with UsePaging
+query {
+  products(where: { name: { contains: "GPS" } }, order: { price: ASC },first: 5) {
+    nodes {
+      id
+      name
+      brand {
+        id
+        name
+      }
+      type {
+        id
+      }
+      price
+    }
+    edges {
+      cursor
+    }
+  }
+}
+
+///--------------------------- with UseOffSetPaging
+query {
+  products(skip: 2, take: 3, where: { name: { contains: "GPS" } }, order: { price: ASC }) {
+    items {
+      id
+      name
+      brand {
+        id
+        name
+      }
+      type {
+        id
+      }
+      price
+    }
+  }
+}
