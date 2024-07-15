@@ -8,7 +8,7 @@ public readonly record struct ProductsFilterInputType(
     string Name,
     decimal Price)
 {
-    public ProductFilter ToFilter() => new(Name, Price, BrandId?.In, TypeId?.In);
+    public ProductFilter ToFilter() => new(BrandId?.In, TypeId?.In);
 }
 
 public readonly record struct ProductsBrandIdFilterInputType(int[]? In);
