@@ -34,8 +34,18 @@ builder.Services
 
         return error;
     });
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAnonymous", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 var app = builder.Build();
+
+app.UseCors("AllowAnonymous");
 
 app.MapGraphQL();
 
