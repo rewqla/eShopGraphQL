@@ -1,8 +1,9 @@
 import { gql, useQuery } from "@apollo/client";
+import { useEffect, useState } from "react";
 
 const GET_PRODUCTS = gql`
-  query GetProducts($take: Int, $order: [ProductSortInput!]) {
-    products(take: $take, order: $order) {
+  query GetProducts($take: Int, $skip: Int, $order: [ProductSortInput!]) {
+    products(take: $take, skip: $skip, order: $order) {
       items {
         id
         name
@@ -21,15 +22,27 @@ const GET_PRODUCTS = gql`
 `;
 
 const Products = () => {
-  const { loading, error, data } = useQuery(GET_PRODUCTS, {
+  const [skip, setSkip] = useState(0);
+  const take = 5;
+
+  const { loading, error, data, refetch } = useQuery(GET_PRODUCTS, {
     variables: {
-      take: 5,
+      take,
+      skip,
       order: { price: "ASC" },
     },
   });
 
-  console.log(data);
-  console.log(error);
+  const handleNext = () => {
+    setSkip(skip + take);
+  };
+
+  const handlePrevious = () => {
+    setSkip(skip - take);
+  };
+
+  const totalPages = data ? Math.ceil(data.products.totalCount / take) : 1;
+  const currentPage = data ? Math.floor(skip / take) + 1 : 1;
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
@@ -47,6 +60,20 @@ const Products = () => {
           </li>
         ))}
       </ul>
+      <div>
+        <button onClick={handlePrevious} disabled={skip === 0}>
+          Previous
+        </button>
+        <span>
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          onClick={handleNext}
+          disabled={skip + take >= data.products.totalCount}
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };
