@@ -1,18 +1,20 @@
 import { gql, useQuery } from "@apollo/client";
 import { useEffect, useState } from "react";
+import { BRAND_FIELDS, TYPE_FIELDS } from "./graphql/fragments";
 
 const GET_PRODUCTS = gql`
+  ${BRAND_FIELDS}
+  ${TYPE_FIELDS}
   query GetProducts($take: Int, $skip: Int, $order: [ProductSortInput!]) {
     products(take: $take, skip: $skip, order: $order) {
       items {
         id
         name
         brand {
-          id
-          name
+          ...BrandFields
         }
         type {
-          id
+          ...TypeFields
         }
         price
       }
