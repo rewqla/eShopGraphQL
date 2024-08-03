@@ -1,0 +1,66 @@
+# For more info on HTTP files go to https://aka.ms/vs/httpfile
+@baseUrl = http://localhost:5224
+
+### Get Brnads
+POST {{baseUrl}}/graphql
+Content-Type: application/json
+
+{
+  "query": "query { brands(last: 3) { nodes { id name } } }"
+}
+
+
+### Get products with offset paging
+POST {{baseUrl}}/graphql
+Content-Type: application/json
+
+{
+  "query": "query { products(take: 10, skip: 10) { items { id name brand { id name } type { id } price } } }"
+}  
+
+### Get Brand by Name and ID
+POST {{baseUrl}}/graphql
+Content-Type: application/json
+
+{
+  "query": "query { brandByName(name: \"Solstix\") { name id } brandById(id: \"QnJhbmQ6MTA=\") { name } }"
+}
+
+### Create Brand
+POST {{baseUrl}}/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation { createBrand(input: {name: \"Test branch\"}) { brand { id name } } }"
+}
+
+
+### Get Filtered Products
+POST {{baseUrl}}/graphql
+Content-Type: application/json
+
+{
+  "query": "query { products(take: 5, order: { price: ASC }, where: { name: { contains: \"Waterproof\" }, and: null, price: { gt: 60 } }) { items { id name brand { id name } type { id } price } } }"
+}
+
+### Create Product 
+POST {{baseUrl}}/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation { createProduct(input: { name: \"123\", price: 2.1, brandId: \"QnJhbmQ6MTA=\", typeId: \"UHJvZHVjdFR5cGU6NA==\", restockThreshold: 15, maxStockThreshold: 30 }) { product { id name } errors { kind: __typename ... on ArgumentError { message paramName } ... on InvalidBrandIdError { brandId: id message } ... on InvalidProductTypeIdError { productTypeId: id message } ... on MaxStockThresholdToSmallError { message restockThreshold maxStockThreshold } } } }"
+}
+
+### Update Product 
+POST {{baseUrl}}/graphql
+Content-Type: application/json
+
+{
+  "query": "mutation updateProduct($input: UpdateProductInput!) { updateProduct(input: $input) { product { name id } errors { kind: __typename ... on ArgumentError { message paramName } ... on InvalidBrandIdError { brandId: id message } ... on InvalidProductTypeIdError { productTypeId: id message } ... on MaxStockThresholdToSmallError { message restockThreshold maxStockThreshold } } } }",
+  "variables": {
+    "input": {
+      "id": "UHJvZHVjdDoxMDAw",
+      "name": "Green Equipment2"
+    }
+  }
+}
