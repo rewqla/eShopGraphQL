@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { gql, useMutation } from "@apollo/client";
+import { useCreateBrandMutation } from "./graphql/GraphQLService";
 
 const CREATE_BRAND = gql`
   mutation CreateBrand($input: CreateBrandInput!) {
@@ -14,12 +15,13 @@ const CREATE_BRAND = gql`
 
 const CreateBrand = () => {
   const [name, setName] = useState("");
-  const [createBrand, { data, loading, error }] = useMutation(CREATE_BRAND);
+
+  const [createBrand, { data, loading, error }] = useCreateBrandMutation();
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     try {
-      await createBrand({ variables: { input: { name } } });
+      createBrand({ variables: { input: { name } } });
     } catch (err) {
       console.error(err);
     }

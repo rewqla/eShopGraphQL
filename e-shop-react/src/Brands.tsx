@@ -1,5 +1,6 @@
 import React from "react";
 import { gql, useQuery } from "@apollo/client";
+import { useGetBrandsQuery } from "./graphql/GraphQLService";
 
 const GET_BRANDS = gql`
   query GetBrands($last: Int) {
@@ -13,10 +14,8 @@ const GET_BRANDS = gql`
 `;
 
 const Brands = () => {
-  const { loading, error, data } = useQuery(GET_BRANDS, {
-    variables: {
-      last: 3,
-    },
+  const { loading, error, data } = useGetBrandsQuery({
+    last: 3,
   });
 
   if (loading) return <p>Loading...</p>;

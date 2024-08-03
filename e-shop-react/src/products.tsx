@@ -1,6 +1,7 @@
 import { gql, useQuery } from "@apollo/client";
 import { useEffect, useState } from "react";
 import { BRAND_FIELDS, TYPE_FIELDS } from "./graphql/fragments";
+import { useGetProductsQuery } from "./graphql/GraphQLService";
 
 const GET_PRODUCTS = gql`
   ${BRAND_FIELDS}
@@ -27,12 +28,10 @@ const Products = () => {
   const [skip, setSkip] = useState(0);
   const take = 5;
 
-  const { loading, error, data, refetch } = useQuery(GET_PRODUCTS, {
-    variables: {
-      take,
-      skip,
-      order: { price: "ASC" },
-    },
+  const { loading, error, data } = useGetProductsQuery({
+    take,
+    skip,
+    order: { price: "ASC" },
   });
 
   const handleNext = () => {

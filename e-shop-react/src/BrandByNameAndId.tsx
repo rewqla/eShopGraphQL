@@ -1,5 +1,6 @@
 import React from "react";
 import { gql, useQuery } from "@apollo/client";
+import { useGetBrandByNameAndIdQuery } from "./graphql/GraphQLService";
 
 const GET_BRAND_BY_NAME_AND_ID = gql`
   query GetBrandByNameAndId($name: String!, $id: ID!) {
@@ -19,8 +20,9 @@ declare interface BrandByNameAndIdProps {
 }
 
 const BrandByNameAndId: React.FC<BrandByNameAndIdProps> = ({ name, id }) => {
-  const { loading, error, data } = useQuery(GET_BRAND_BY_NAME_AND_ID, {
-    variables: { name, id },
+  const { loading, error, data } = useGetBrandByNameAndIdQuery({
+    name,
+    id,
   });
 
   if (loading) return <p>Loading...</p>;
