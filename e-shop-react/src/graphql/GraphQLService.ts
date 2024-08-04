@@ -1,10 +1,17 @@
-import { gql, useQuery, useMutation } from "@apollo/client";
+import {
+  gql,
+  useQuery,
+  useMutation,
+  ApolloClient,
+  InMemoryCache,
+} from "@apollo/client";
 import { BRAND_FIELDS, TYPE_FIELDS } from "./fragments";
 import {
   GET_PRODUCTS,
   GET_BRANDS,
   CREATE_BRAND,
   GET_BRAND_BY_NAME_AND_ID,
+  UPDATE_PRODUCT,
 } from "./queries";
 
 export const useGetProductsQuery = (variables: any) => {
@@ -35,4 +42,10 @@ export const useGetBrandByNameAndIdQuery = (variables: any) => {
   });
 
   return { loading, error, data, refetch };
+};
+
+export const useUpdateProductMutation = () => {
+  const [updateProduct, { data, loading, error }] = useMutation(UPDATE_PRODUCT);
+
+  return { updateProduct, data, loading, error };
 };

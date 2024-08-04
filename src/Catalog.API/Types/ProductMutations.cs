@@ -33,6 +33,7 @@ namespace eShop.Catalog.Types
         }
 
         [Error<InvalidBrandIdErrorFactory>]
+        [Error<InvalidOperationException>]
         [Error<InvalidProductTypeIdError>]
         [Error<ArgumentException>]
         [Error<MaxStockThresholdToSmallException>]

@@ -55,3 +55,42 @@ export const GET_BRAND_BY_NAME_AND_ID = gql`
     }
   }
 `;
+
+export const UPDATE_PRODUCT = gql`
+  mutation UpdateProduct($input: UpdateProductInput!) {
+    updateProduct(input: $input) {
+      product {
+        id
+        name
+        price
+      }
+      errors {
+        kind: __typename
+        ... on ArgumentError {
+          message
+          paramName
+        }
+        ... on InvalidBrandIdError {
+          brandId: id
+          message
+        }
+        ... on InvalidProductTypeIdError {
+          productTypeId: id
+          message
+        }
+        ... on MaxStockThresholdToSmallError {
+          message
+          restockThreshold
+          maxStockThreshold
+        }
+        ... on InvalidProductIdError {
+          id
+          message
+        }
+        ... on InvalidOperationError {
+          message
+        }
+      }
+    }
+  }
+`;

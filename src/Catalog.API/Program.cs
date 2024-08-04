@@ -54,6 +54,4 @@ app.RunWithGraphQLCommands(args);
 public interface IMyErrorInterface
 {
     string Message { get; }
-
-
 }
