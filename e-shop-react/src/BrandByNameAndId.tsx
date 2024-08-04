@@ -2,18 +2,6 @@ import React from "react";
 import { gql, useQuery } from "@apollo/client";
 import { useGetBrandByNameAndIdQuery } from "./graphql/GraphQLService";
 
-const GET_BRAND_BY_NAME_AND_ID = gql`
-  query GetBrandByNameAndId($name: String!, $id: ID!) {
-    brandByName(name: $name) {
-      name
-      id
-    }
-    brandById(id: $id) {
-      name
-    }
-  }
-`;
-
 declare interface BrandByNameAndIdProps {
   name: string;
   id: string;

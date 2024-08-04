@@ -1,65 +1,38 @@
 import { gql, useQuery, useMutation } from "@apollo/client";
 import { BRAND_FIELDS, TYPE_FIELDS } from "./fragments";
+import {
+  GET_PRODUCTS,
+  GET_BRANDS,
+  CREATE_BRAND,
+  GET_BRAND_BY_NAME_AND_ID,
+} from "./queries";
 
-const GET_PRODUCTS = gql`
-  ${BRAND_FIELDS}
-  ${TYPE_FIELDS}
-  query GetProducts($take: Int, $skip: Int, $order: [ProductSortInput!]) {
-    products(take: $take, skip: $skip, order: $order) {
-      items {
-        id
-        name
-        brand {
-          ...BrandFields
-        }
-        type {
-          ...TypeFields
-        }
-        price
-      }
-      totalCount
-    }
-  }
-`;
+export const useGetProductsQuery = (variables: any) => {
+  const { loading, error, data, refetch } = useQuery(GET_PRODUCTS, {
+    variables,
+  });
 
-const GET_BRANDS = gql`
-  query GetBrands($last: Int) {
-    brands(last: $last) {
-      nodes {
-        id
-        name
-      }
-    }
-  }
-`;
+  return { loading, error, data, refetch };
+};
 
-const CREATE_BRAND = gql`
-  mutation CreateBrand($input: CreateBrandInput!) {
-    createBrand(input: $input) {
-      brand {
-        id
-        name
-      }
-    }
-  }
-`;
+export const useGetBrandsQuery = (variables: any) => {
+  const { loading, error, data, refetch } = useQuery(GET_BRANDS, {
+    variables,
+  });
 
-const GET_BRAND_BY_NAME_AND_ID = gql`
-  query GetBrandByNameAndId($name: String!, $id: ID!) {
-    brandByName(name: $name) {
-      name
-      id
-    }
-    brandById(id: $id) {
-      name
-    }
-  }
-`;
+  return { loading, error, data, refetch };
+};
 
-export const useGetProductsQuery = (variables: any) =>
-  useQuery(GET_PRODUCTS, { variables });
-export const useGetBrandsQuery = (variables: any) =>
-  useQuery(GET_BRANDS, { variables });
-export const useCreateBrandMutation = () => useMutation(CREATE_BRAND);
-export const useGetBrandByNameAndIdQuery = (variables: any) =>
-  useQuery(GET_BRAND_BY_NAME_AND_ID, { variables });
+export const useCreateBrandMutation = () => {
+  const [createBrand, { data, loading, error }] = useMutation(CREATE_BRAND);
+
+  return { createBrand, data, loading, error };
+};
+
+export const useGetBrandByNameAndIdQuery = (variables: any) => {
+  const { loading, error, data, refetch } = useQuery(GET_BRAND_BY_NAME_AND_ID, {
+    variables,
+  });
+
+  return { loading, error, data, refetch };
+};

@@ -16,7 +16,7 @@ const CREATE_BRAND = gql`
 const CreateBrand = () => {
   const [name, setName] = useState("");
 
-  const [createBrand, { data, loading, error }] = useCreateBrandMutation();
+  const { createBrand, data, loading, error } = useCreateBrandMutation();
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
