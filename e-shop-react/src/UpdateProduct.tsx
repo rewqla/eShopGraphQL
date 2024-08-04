@@ -28,6 +28,27 @@ const UpdateProduct = () => {
     }
   };
 
+  const renderErrorMessage = (error: any) => {
+    if (!error) return null;
+
+    switch (error.kind) {
+      case "ArgumentError":
+        return `${error.message} (Parameter: ${error.paramName})`;
+      case "InvalidBrandIdError":
+        return `${error.message} (${atob(error.id)})`;
+      case "InvalidProductTypeIdError":
+        return `${error.message} (${atob(error.id)})`;
+      case "MaxStockThresholdToSmallError":
+        return `${error.message} (Restock Threshold: ${error.restockThreshold}, Max Stock Threshold: ${error.maxStockThreshold})`;
+      case "InvalidProductIdError":
+        return `${error.message} (${atob(error.id)})`;
+      case "InvalidOperationError":
+        return `${error.message}`;
+      default:
+        return error.message;
+    }
+  };
+
   return (
     <div>
       <h2>Update Product with error handling</h2>
@@ -68,7 +89,10 @@ const UpdateProduct = () => {
         </button>
       </form>
       {data && data.updateProduct.errors && (
-        <p>Error message: {data.updateProduct.errors[0].message}</p>
+        <div>
+          <h3>Error:</h3>
+          <p>{renderErrorMessage(data.updateProduct.errors[0])}</p>
+        </div>
       )}
 
       {data && data.updateProduct.product && (
